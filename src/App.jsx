@@ -15,9 +15,38 @@ export default function App() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    
+    try {
+      const response = await fetch('https://formspree.io/f/mwpgrlnw', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          discord: formData.discord,
+          age: formData.age,
+          skillLevel: formData.skillLevel,
+          aboutYou: formData.aboutYou,
+          whyJoin: formData.whyJoin
+        })
+      });
+      
+      if (response.ok) {
+        setSubmitted(true);
+      } else {
+        alert('Something went wrong. Please try again!');
+      }
+    } catch (error) {
+      alert('Something went wrong. Please try again!');
+    }
+    
+    setSubmitting(false);
   };
 
   return (
@@ -149,6 +178,13 @@ export default function App() {
         .submit-btn:hover {
           transform: translateY(-2px);
           box-shadow: 0 10px 30px rgba(255, 183, 77, 0.3);
+        }
+        
+        .submit-btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          animation: none;
+          transform: none;
         }
         
         .feature-tag {
@@ -403,8 +439,8 @@ export default function App() {
                   />
                 </div>
 
-                <button type="submit" className="submit-btn">
-                  Let's Ride 🏔️
+                <button type="submit" className="submit-btn" disabled={submitting}>
+                  {submitting ? 'Sending...' : "Let's Ride 🏔️"}
                 </button>
               </form>
             )}
