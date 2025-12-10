@@ -251,7 +251,7 @@ export default function App() {
             color: 'rgba(240, 244, 248, 0.8)',
             animation: 'slideUp 0.8s ease-out 0.3s backwards'
           }}>
-            A community of 18-30 year olds who hit the slopes together every week. 
+            A community of 17-30 year olds who hit the slopes together every week. 
             Carpools, good vibes, and powder days—no experience required.
           </p>
           
@@ -259,7 +259,7 @@ export default function App() {
             <span className="feature-tag">🚗 Free Carpools</span>
             <span className="feature-tag">⛷️ All Skill Levels</span>
             <span className="feature-tag">🎿 Weekly Trips</span>
-            <span className="feature-tag">👥 Ages 18-30</span>
+            <span className="feature-tag">👥 Ages 17-30</span>
           </div>
         </header>
 
