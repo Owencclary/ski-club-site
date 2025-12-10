@@ -1,53 +1,8 @@
-import { useState } from 'react';
+// Make sure to run: npm install @formspree/react
+import { useForm, ValidationError } from '@formspree/react';
 
 export default function App() {
-  const [formData, setFormData] = useState({
-    name: '',
-    discord: '',
-    age: '',
-    skillLevel: '',
-    aboutYou: '',
-    whyJoin: ''
-  });
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    
-    try {
-      const response = await fetch('https://formspree.io/f/mwpgrlnw', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          discord: formData.discord,
-          age: formData.age,
-          skillLevel: formData.skillLevel,
-          aboutYou: formData.aboutYou,
-          whyJoin: formData.whyJoin
-        })
-      });
-      
-      if (response.ok) {
-        setSubmitted(true);
-      } else {
-        alert('Something went wrong. Please try again!');
-      }
-    } catch (error) {
-      alert('Something went wrong. Please try again!');
-    }
-    
-    setSubmitting(false);
-  };
+  const [state, handleSubmit] = useForm("mwpgrlnw");
 
   return (
     <div style={{
@@ -217,6 +172,12 @@ export default function App() {
           background-size: 1.2rem;
           padding-right: 3rem;
         }
+        
+        .validation-error {
+          color: #ff6b6b;
+          font-size: 0.85rem;
+          margin-top: 0.25rem;
+        }
       `}</style>
 
       {/* Snow particles */}
@@ -327,10 +288,10 @@ export default function App() {
               marginBottom: '1.5rem',
               color: '#ffb74d'
             }}>
-              {submitted ? 'Welcome to the Crew! 🎉' : 'Join the Crew'}
+              {state.succeeded ? 'Welcome to the Crew! 🎉' : 'Join the Crew'}
             </h2>
 
-            {submitted ? (
+            {state.succeeded ? (
               <div style={{ textAlign: 'center', padding: '2rem 0' }}>
                 <div style={{
                   width: '80px',
@@ -353,53 +314,65 @@ export default function App() {
             ) : (
               <form onSubmit={handleSubmit}>
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <label className="form-label">Your Name</label>
+                  <label className="form-label" htmlFor="name">Your Name</label>
                   <input
+                    id="name"
                     type="text"
                     name="name"
                     className="form-input"
                     placeholder="What should we call you?"
-                    value={formData.name}
-                    onChange={handleChange}
                     required
                   />
+                  <ValidationError prefix="Name" field="name" errors={state.errors} className="validation-error" />
                 </div>
 
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <label className="form-label">Discord Username</label>
+                  <label className="form-label" htmlFor="email">Email</label>
                   <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    className="form-input"
+                    placeholder="your@email.com"
+                    required
+                  />
+                  <ValidationError prefix="Email" field="email" errors={state.errors} className="validation-error" />
+                </div>
+
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label className="form-label" htmlFor="discord">Discord Username</label>
+                  <input
+                    id="discord"
                     type="text"
                     name="discord"
                     className="form-input"
                     placeholder="username"
-                    value={formData.discord}
-                    onChange={handleChange}
                     required
                   />
+                  <ValidationError prefix="Discord" field="discord" errors={state.errors} className="validation-error" />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
                   <div>
-                    <label className="form-label">Age</label>
+                    <label className="form-label" htmlFor="age">Age</label>
                     <input
+                      id="age"
                       type="number"
                       name="age"
                       className="form-input"
-                      placeholder="18-30"
-                      min="18"
+                      placeholder="17-30"
+                      min="17"
                       max="30"
-                      value={formData.age}
-                      onChange={handleChange}
                       required
                     />
+                    <ValidationError prefix="Age" field="age" errors={state.errors} className="validation-error" />
                   </div>
                   <div>
-                    <label className="form-label">Skill Level</label>
+                    <label className="form-label" htmlFor="skillLevel">Skill Level</label>
                     <select
+                      id="skillLevel"
                       name="skillLevel"
                       className="form-input select-input"
-                      value={formData.skillLevel}
-                      onChange={handleChange}
                       required
                     >
                       <option value="">Select...</option>
@@ -409,38 +382,39 @@ export default function App() {
                       <option value="advanced">Advanced</option>
                       <option value="expert">Expert</option>
                     </select>
+                    <ValidationError prefix="Skill Level" field="skillLevel" errors={state.errors} className="validation-error" />
                   </div>
                 </div>
 
                 <div style={{ marginBottom: '1.25rem' }}>
-                  <label className="form-label">About You</label>
+                  <label className="form-label" htmlFor="aboutYou">About You</label>
                   <textarea
+                    id="aboutYou"
                     name="aboutYou"
                     className="form-input"
                     placeholder="Where are you based? Ski or snowboard? Favorite resort?"
                     rows="3"
-                    value={formData.aboutYou}
-                    onChange={handleChange}
                     style={{ resize: 'vertical', minHeight: '80px' }}
                   />
+                  <ValidationError prefix="About You" field="aboutYou" errors={state.errors} className="validation-error" />
                 </div>
 
                 <div style={{ marginBottom: '1.75rem' }}>
-                  <label className="form-label">Why do you want to join?</label>
+                  <label className="form-label" htmlFor="whyJoin">Why do you want to join?</label>
                   <textarea
+                    id="whyJoin"
                     name="whyJoin"
                     className="form-input"
                     placeholder="Looking for ski buddies? Need a carpool? Just want to send it?"
                     rows="3"
-                    value={formData.whyJoin}
-                    onChange={handleChange}
                     style={{ resize: 'vertical', minHeight: '80px' }}
                     required
                   />
+                  <ValidationError prefix="Why Join" field="whyJoin" errors={state.errors} className="validation-error" />
                 </div>
 
-                <button type="submit" className="submit-btn" disabled={submitting}>
-                  {submitting ? 'Sending...' : "Let's Ride 🏔️"}
+                <button type="submit" className="submit-btn" disabled={state.submitting}>
+                  {state.submitting ? 'Sending...' : "Let's Ride 🏔️"}
                 </button>
               </form>
             )}
